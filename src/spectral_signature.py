@@ -14,6 +14,13 @@ sns.set_style("ticks")
 
 
 def load_data(path):
+    """load sentinel-2 data
+
+    parameters
+    ----------
+    path: str
+        provide teh path to sentinel-2 data
+    """
     with rasterio.open(path) as src:
         s2 = src.read()
         profile = src.profile
@@ -21,6 +28,15 @@ def load_data(path):
 
 
 def point_to_dataframe(coords, profile):
+    """ Converet the cooridnates of the point into dataframe
+
+    parameters
+    ----------
+    coords: int
+        the coordinates of the point from which spectral signature is derived
+    profile: str
+        the profile when laod data in rasterio
+    """
     p = geometry.Point(coords)
     point = gpd.GeoDataFrame({'geometry': [(p)]}, index=[
                              0], crs=profile['crs'])
@@ -28,6 +44,17 @@ def point_to_dataframe(coords, profile):
 
 
 def extract_value(point, path, spectra):
+    """ Extract the pixel value from which spectral signature will be displayed
+
+    parameters
+    ----------
+    point: int
+        the coordinates of the point from which spectral signature is derived
+    path: str
+        provide the path to the sentinel-2 data (.tif)
+    spectra: list
+        A list of the spectral bands
+    """
     point_location = []
     point_location_percent = []
     for i, loc in enumerate(spectra):
@@ -47,6 +74,17 @@ def extract_value(point, path, spectra):
 
 
 def spectral_signature_plot(data_path, coords,  label='spectral signature'):
+    """ Plot the spectral signature of a specif feature (e.g vegation, urban, e.t.c)
+
+    parameters
+    ----------
+    data_path: str
+        provide the path to the sentinel-2 data (.tif)
+    coords: int
+        Provide the coordinates (single point) of a feature from which the spectral signature will be produced.
+        The coordinates should be given in brackets (x, y) and its coordinate system should match the one 
+        of the sentinel-2 data 
+    """
     s2, profile = load_data(data_path)
 
     # SENTINEL-2 spectral bands
